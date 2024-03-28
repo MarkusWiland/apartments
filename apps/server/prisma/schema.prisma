@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Apartment {
+  id  Int @id @default(autoincrement())
+  name String 
+  year Int
+  role Role
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Property {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  price       Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+  MatchProperties MatchProperty[] 
+  Favorites   Favorite[]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  MatchProperties MatchProperty[] 
+  Properties Property[]
+  Favorites  Favorite[]
+}
+
+model Favorite {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  propertyId Int
+  createdAt  DateTime @default(now())
+
+  User     User     @relation(fields: [userId], references: [id])
+  Property Property @relation(fields: [propertyId], references: [id])
+
+  @@unique([userId, propertyId])
+}
+model MatchProperty {
+  id         Int      @id @default(autoincrement())
+  propertyId Int
+  userId     Int
+  score      Float    
+  matchedAt  DateTime @default(now()) 
+
+  Property Property @relation(fields: [propertyId], references: [id])
+  User     User     @relation(fields: [userId], references: [id])
+
+  @@index([userId]) 
+
+}
+enum Role {
+  USER
+  ADMIN
+}
