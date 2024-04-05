@@ -6,6 +6,7 @@ import { ApartmentsModule } from './apartments/apartments.module';
 import { PropertiesModule } from './properties/properties.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
     PropertiesModule,
     FavoritesModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
